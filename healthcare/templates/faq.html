@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FAQs</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="fade-entry">
+        <div class="background-image3"></div>
+
+        <div class="healthcare-header">
+            <a href="/dashboard">Back →</a>
+        </div>
+
+        <div class="faq-unique-container">
+            <h1 class="faq-unique-title">FAQs</h1>
+            <p class="faq-unique-description">Read some frequently asked questions.</p>
+
+            <div class="faq-unique-item">
+                <button class="faq-unique-question">What is JMHC Management Portal?</button>
+                <div class="faq-unique-answer">
+                    <p>JMHC Management Portal is an advanced system designed to streamline hospital wheelchair management. It allows staff to dispense, track, and manage wheelchairs efficiently, ensuring optimal utilization and availability for patients when needed.</p>
+                </div>
+            </div>
+            
+            <div class="faq-unique-item">
+                <button class="faq-unique-question">How to use the Request Wheelchair option?</button>
+                <div class="faq-unique-answer">
+                    <p>To use the Request Wheelchair option, simply enter the patient's ID into the provided input field and click the "Request Wheelchair" button. The system will automatically assign an available wheelchair to the patient and update its status in the portal.</p>
+                </div>
+            </div>
+            
+            <div class="faq-unique-item">
+                <button class="faq-unique-question">How to track wheelchairs?</button>
+                <div class="faq-unique-answer">
+                    <p>Wheelchairs can be tracked in real-time using the GPS tracking feature integrated into the system. Their current location is displayed on the portal, ensuring quick accessibility and efficient management.</p>
+                </div>
+            </div>
+            
+            <div class="faq-unique-item">
+                <button class="faq-unique-question">What should I do if no wheelchairs are available?</button>
+                <div class="faq-unique-answer">
+                    <p>If no wheelchairs are currently available, you can monitor the portal for real-time updates as wheelchairs are returned. Additionally, notify the hospital staff to prioritize the return of in-use wheelchairs for urgent cases.</p>
+                </div>
+            </div>
+
+            <div class="faq-unique-item">
+                <button class="faq-unique-question">I am having issues with the site, whom should I contact?</button>
+                <div class="faq-unique-answer">
+                    <p>Visit the Credits section of the site where you will find the developers' GitHub and LinkedIn profiles. You can contact them there for assistance.</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script>
+        const faqQuestions = document.querySelectorAll('.faq-unique-question');
+        faqQuestions.forEach(question => {
+            question.addEventListener('click', () => {
+                const currentlyActive = document.querySelector('.faq-unique-question.active');
+                
+                // If another question is open, close it
+                if (currentlyActive && currentlyActive !== question) {
+                    currentlyActive.classList.remove('active');
+                    currentlyActive.nextElementSibling.style.display = 'none';
+                }
+
+                // Toggle the clicked question
+                question.classList.toggle('active');
+                const answer = question.nextElementSibling;
+                answer.style.display = question.classList.contains('active') ? 'block' : 'none';
+            });
+        });
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+
+</body>
+</html>

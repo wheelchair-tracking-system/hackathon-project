@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="static/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+    <title>JMCH Wheelchair Management</title>
+</head>
+
+<body>
+
+    <div class="healthcare-page">
+        <div class="background-image"></div>
+        <div class="healthcare-header">
+            <a href="/dashboard">Log in</a>
+            <a href="/admin">Admin Panel</a>
+            <a href="#" target="_blank" class="github">GitHub</a>
+        </div>
+
+        <div class="healthcare-content">
+            <header>
+                <h2>Welcome to</h2>
+                <h1><span>JECRC Medical College and Hospital</span></h1>
+                <p>This site will help you Dispense, Manage and Track Wheelchairs</p>
+            </header>
+
+            <section class="healthcare-features">
+                <div class="healthcare-feature">
+                    <img src="static/images/manage.png" alt="Dispense">
+                    <p>Get Wheelchair</p>
+                </div>
+                <div class="healthcare-feature">
+                    <img src="static/images/return.png" alt="Hospital Checker">
+                    <p>Return Wheelchair</p>
+                </div>
+                <div class="healthcare-feature">
+                    <img src="static/images/track.png" alt="Health Risk Calculators">
+                    <p>Track Wheelchair</p>
+                </div>
+            </section>
+
+            <header>
+                <p>and many more...</p>
+            </header>
+
+            <h2 class="review-header">Read Our Reviews</h2>
+            <div class="review-container">
+                <div class="review-box-unique">
+                    <div class="review-header-unique">
+                        <div class="avatar-unique">A</div>
+                        <div>
+                            <strong>Ashwin Sharma</strong>
+                            <div class="stars-unique">★★★★★</div>
+                        </div>
+                    </div>
+                    <div class="review-content-unique">
+                        <p>I had an exceptional experience at JECRC Medical College and Hospital. The staff was highly professional, and the doctors were very knowledgeable. The facilities are state-of-the-art, and the care provided is outstanding. Highly recommended!</p>
+                    </div>
+                </div>
+                <div class="review-box-unique">
+                    <div class="review-header-unique">
+                        <div class="avatar-unique">S</div>
+                        <div>
+                            <strong>Seema Rani</strong>
+                            <div class="stars-unique">★★★★★</div>
+                        </div>
+                    </div>
+                    <div class="review-content-unique">
+                        <p>JECRC Medical College offers excellent healthcare services with a compassionate team of doctors and nurses. The hospital is well-equipped and clean. I feel safe and well taken care of here. Truly grateful for the team!</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="review-container">
+                <div class="review-box-unique">
+                    <div class="review-header-unique">
+                        <div class="avatar-unique">K</div>
+                        <div>
+                            <strong>Kiran Mehta</strong>
+                            <div class="stars-unique">★★★★★</div>
+                        </div>
+                    </div>
+                    <div class="review-content-unique">
+                        <p>I underwent a procedure at JECRC Medical College, and the experience was seamless from start to finish. The doctors explained everything clearly and ensured I was comfortable throughout. The hospital staff was friendly and professional. Highly impressed!</p>
+                    </div>
+                </div>
+                <div class="review-box-unique">
+                    <div class="review-header-unique">
+                        <div class="avatar-unique">R</div>
+                        <div>
+                            <strong>Ravi Kumar</strong>
+                            <div class="stars-unique">★★★★★</div>
+                        </div>
+                    </div>
+                    <div class="review-content-unique">
+                        <p>The medical care at JECRC Medical College is top-notch. The doctors were caring, and the facilities were equipped with the latest technology. I received excellent treatment and am recovering well. A big thank you to the entire medical team!</p>
+                    </div>
+                </div>
+            </div>
+                   
+
+            <a href="/dashboard" class="healthcare-explore-button">Visit Dashboard →</a>
+        </div>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+
+        function showSlide(index) {
+        slides.forEach((slide, i) => {
+            slide.style.transform = `translateX(${100 * (i - index)}%)`;
+        });
+        }
+
+        function nextSlide() {
+        currentSlide = (currentSlide + 1) % totalSlides;
+        showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+        currentSlide = (currentSlide - 1 + totalSlides) % totalSlides;
+        showSlide(currentSlide);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(nextSlide, 3000);
+
+        // Initialize slider
+        showSlide(currentSlide);
+
+        window.addEventListener('load', function () {
+            document.querySelector('.healthcare-page').classList.add('fade-in');
+        });
+    </script>
+</body>
+
+</html>

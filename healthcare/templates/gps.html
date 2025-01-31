@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPS Tracker</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+        }
+        #map {
+            height: 100%;
+        }
+        .gps-data {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div id="map"></div>
+<div class="gps-data">
+    <p>Latitude: <span id="latitude">Waiting...</span></p>
+    <p>Longitude: <span id="longitude">Waiting...</span></p>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<script>
+var map = L.map('map').setView([0,0], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(map);
+
+var marker = L.marker([0,0]).addTo(map);
+
+function updateMap(latitude, longitude) {
+    marker.setLatLng([latitude, longitude]);
+    map.panTo([latitude, longitude]);
+    document.getElementById('latitude').textContent = latitude.toFixed(6);
+    document.getElementById('longitude').textContent = longitude.toFixed(6);
+}
+
+const eventSource = new EventSource('/gps');
+
+eventSource.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    const latitude = data.latitude;
+    const longitude = data.longitude;
+    updateMap(latitude, longitude);
+};
+
+eventSource.onerror = function(event) {
+    console.error('Error in event stream:', event);
+};
+</script>
+
+</body>
+</html>

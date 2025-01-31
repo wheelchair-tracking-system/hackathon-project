@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheelchair Complaint</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="fade-entry">
+
+        <div class="healthcare-header">
+            <a href="/dashboard">Back →</a>
+        </div>
+
+        <div class="emergency-form-container">
+            <h1 class="wheelchair-header">Report Wheelchair</h1>
+
+            <div class="stats-container">
+                <p>Enter Wheelchair ID and Problem to report</p>
+            </div>
+
+            <form id="complaintForm">
+                <label for="wheelchair_id" class="emergency-label">Wheelchair ID:</label>
+                <input type="number" id="wheelchair_id" class="emergency-input-field" required>
+            
+                <label for="problem" class="emergency-label">Problem:</label>
+                <select id="problem" class="emergency-input-field" required>
+                    <option value="Flat Tire">Flat Tire</option>
+                    <option value="Broken Frame">Broken Frame</option>
+                    <option value="Stuck Wheels">Stuck Wheels</option>
+                    <option value="Other">Other</option>
+                </select>
+            
+                <button type="submit" class="emergency-submit-button">Submit Complaint</button>
+            </form>
+        </div>
+            
+
+            <h2 class="under-maintain">Wheelchairs Under Maintenance</h2>
+            <table class="wheelchair-table">
+                <thead>
+                    <tr>
+                        <th>Wheelchair ID</th>
+                        <th>Status</th>
+                        <th>Problem</th>
+                    </tr>
+                </thead>
+                <tbody id="maintainanceWheelchairs">
+                    <!-- Rows of wheelchairs under maintenance will be inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const complaintForm = document.getElementById('complaintForm');
+        const maintainanceWheelchairsTable = document.getElementById('maintainanceWheelchairs');
+
+        // Fetch and display the wheelchairs under maintenance
+        async function fetchUnderMaintenance() {
+            try {
+                const response = await fetch('/api/under_maintenance');
+                const data = await response.json();
+
+                // Clear existing rows before updating
+                maintainanceWheelchairsTable.innerHTML = '';
+
+                // Create a row for each wheelchair under maintenance
+                data.forEach(wheelchair => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${wheelchair.id}</td>
+                        <td class="status under_maintenance">${wheelchair.status}</td>
+                        <td>${wheelchair.problem}</td>
+                    `;
+                    maintainanceWheelchairsTable.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching under maintenance wheelchairs:', error);
+            }
+        }
+
+        // Handle complaint submission
+        complaintForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const wheelchairId = document.getElementById('wheelchair_id').value;
+            const problem = document.getElementById('problem').value;
+
+            const response = await fetch('/api/report_complaint', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ wheelchair_id: wheelchairId, problem: problem })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+
+            // Update the table after submitting the complaint
+            if (response.status === 200) {
+                fetchUnderMaintenance();
+            }
+
+            // Reset the form
+            complaintForm.reset();
+        });
+
+        // Initial load of the under maintenance wheelchairs
+        fetchUnderMaintenance();
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>

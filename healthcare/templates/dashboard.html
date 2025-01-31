@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JMCH Management Portal</title>
+    <link rel="stylesheet" href="static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="fade-entry">
+        <div class="healthcare-header">
+            <a href="https://jecrcuniversity.edu.in/" target="_blank">Get to know JU</a>
+            <a href="#" target="_blank" class="github">GitHub</a>
+            <a href="/login">Create New Account</a>
+            <a href="/logout">Log out</a>
+        </div>
+        <div class="background-image2"></div>
+        <div class="jmch-wrapper">
+            <h2 class="jmhc-welcome">Welcome to</h2>
+            <h1 class="jmch-title">JMCH Management Portal</h1>
+            <p class="jmch-subtitle">Select your desired option below</p>
+            <div class="jmch-button-grid">
+                <a href="/wheelchairdispense" class="jmch-button">Request Wheelchair</a>
+                <a href="/return-wheelchair" class="jmch-button">Return Wheelchair</a>
+                <a href="/gpspage" class="jmch-button">Get Wheelchair Location</a>
+                <a href="/complaint" class="jmch-button">Raise Wheelchair Complaint</a>
+                <a href="/faq" class="jmch-button">FAQs</a>
+                <a href="/credit" class="jmch-button">Credit & Code</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>

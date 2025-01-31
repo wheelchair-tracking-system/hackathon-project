@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Wheelchair Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="fade-entry">
+
+        <div class="healthcare-header">
+            <a href="/admin">Back →</a>
+        </div>
+
+        <div class="admin-container">
+            <header class="admin-header">
+                Wheelchair Repair Admin Panel
+            </header>
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Wheelchair ID</th>
+                        <th>Problem</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="adminWheelchairTable">
+                    <!-- Wheelchair data will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script>
+        // Fetch the list of wheelchairs under maintenance
+        async function fetchUnderMaintenanceForAdmin() {
+            try {
+                const response = await fetch('/api/under_maintenance');
+                const data = await response.json();
+
+                const adminTableBody = document.getElementById('adminWheelchairTable');
+                adminTableBody.innerHTML = '';  // Clear existing rows
+
+                data.forEach(wheelchair => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${wheelchair.id}</td>
+                        <td>${wheelchair.problem}</td>
+                        <td>
+                            <button class="admin-action-btn" onclick="sendForChecking(${wheelchair.id})">Send for Checking</button>
+                            <button class="admin-action-btn-repaired-btn" onclick="markAsRepaired(${wheelchair.id})">Repaired</button>
+                        </td>
+                    `;
+                    adminTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        // Function to send wheelchair for checking (dummy action)
+        function sendForChecking(wheelchairId) {
+            alert(`Wheelchair ${wheelchairId} has been sent for checking.`);
+        }
+
+        // Function to mark wheelchair as repaired
+        async function markAsRepaired(wheelchairId) {
+            try {
+                const response = await fetch('/api/mark_repaired', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wheelchair_id: wheelchairId })
+                });
+
+                const result = await response.json();
+                alert(result.message);
+                fetchUnderMaintenanceForAdmin();  // Refresh table after action
+            } catch (error) {
+                console.error('Error updating status:', error);
+                alert('Failed to update wheelchair status.');
+            }
+        }
+
+        // Initial data fetch
+        fetchUnderMaintenanceForAdmin();
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>

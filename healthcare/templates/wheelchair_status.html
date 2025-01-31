@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+    <title>Wheelchair Status Dashboard</title>
+</head>
+<body>
+    <div class="fade-entry">
+        <div class="healthcare-header">
+            <a href="/admin">Back →</a>
+        </div>
+
+        <header class="admin-header">
+            Wheelchairs Current Statuses
+        </header>
+
+        <div class="status-legend">
+            <div class="status-item">
+                <div class="status-dot" style="background-color: #3eea15;"></div>
+                <span>Available</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="background-color: blue;"></div>
+                <span>In Use</span>
+            </div>
+            <div class="status-item">
+                <div class="status-dot" style="background-color: red;"></div>
+                <span>Under Maintenance</span>
+            </div>
+        </div>
+        
+        <div class="status-container" id="wheelchairStatusContainer">
+            <!-- Wheelchair statuses will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <script>
+        fetch('/api/wheelchairs')
+            .then(response => response.json())
+            .then(data => {
+                const wheelchairData = data.data;
+                const container = document.getElementById("wheelchairStatusContainer");
+
+                wheelchairData.forEach((wheelchair) => {
+                    const card = document.createElement("div");
+                    card.classList.add("wheelchair-card");
+
+                    const svg = `
+                        <svg class="wheelchair-icon" height="100px" width="100px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 511.999 511.999" xml:space="preserve">
+                            <g>
+                                <g>
+                                    <path d="M453.914,379.053h-23.778v-88.545c0-17.333-14.102-31.434-31.435-31.434h-63.907c-29.257-47.724-81.903-79.633-141.867-79.633c-2.455,0-4.895,0.064-7.323,0.17l-1.871-5.255h64.195c17.334,0,31.434-14.102,31.434-31.434c0-17.334-14.101-31.435-31.434-31.435h-86.572l-32.245-90.592C123.301,4.568,105.286-3.99,88.957,1.822C72.628,7.634,64.07,25.648,69.882,41.978l54.238,152.381C66.675,220.577,26.65,278.56,26.65,345.72c0,91.687,74.592,166.28,166.28,166.28s166.28-74.592,166.28-166.28c0-8.073-0.59-16.009-1.707-23.778h9.766v88.545c0,17.334,14.102,31.435,31.434,31.435h55.212c17.334,0,31.435-14.102,31.435-31.435C485.349,393.155,471.248,379.053,453.914,379.053z M89.103,35.137c-2.04-5.733,0.964-12.058,6.696-14.097c5.735-2.04,12.059,0.964,14.098,6.696l34.657,97.371c1.446,4.064,5.294,6.779,9.609,6.779h93.768c6.085,0,11.036,4.951,11.036,11.037c0,6.085-4.951,11.036-11.036,11.036h-78.652c-3.315,0-6.422,1.611-8.334,4.319c-1.911,2.708-2.387,6.177-1.275,9.3l5.077,14.264c-7.367,1.263-14.572,3.006-21.576,5.207L89.103,35.137z M192.929,491.601c-80.44,0-145.881-65.443-145.881-145.881s65.442-145.88,145.881-145.88S338.81,265.281,338.81,345.72S273.369,491.601,192.929,491.601z M453.914,421.524h-55.212c-6.085,0-11.036-4.951-11.036-11.037v-98.744c0-5.633-4.566-10.199-10.199-10.199h-24.226c-2.093-7.587-4.712-14.958-7.815-22.072h53.276c6.086,0,11.037,4.951,11.037,11.036v98.744c0,5.633,4.566,10.199,10.199,10.199h33.977c6.086,0,11.037,4.951,11.037,11.036C464.951,416.573,460,421.524,453.914,421.524z" fill="${getColor(wheelchair.status)}"></path>
+                                </g>
+                            </g>
+                        </svg>
+                    `;
+
+                    card.innerHTML = `
+                        ${svg}
+                        <div class="wheelchair-id">ID: ${wheelchair.id}</div>
+                    `;
+
+                    container.appendChild(card);
+                });
+            });
+
+        function getColor(status) {
+            switch(status) {
+                case 'available':
+                    return 'blue'; 
+                case 'in_use':
+                    return '#3eea15'; 
+                case 'under_maintenance':
+                    return 'red'; 
+                default:
+                    return 'gray';
+            }
+        }
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+
+</body>
+</html>

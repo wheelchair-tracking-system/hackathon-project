@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="fade-entry">
+
+        <div class="healthcare-header">
+            <a href="/admin">Back →</a>
+        </div>
+
+        <header class="admin-header">
+            Emergency Wheelchair Request Admin Panel
+        </header>
+
+        <div class="admin-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Staff ID</th>
+                        <th>Location</th>
+                        <th>Notes</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="admin-requests-list">
+                    <!-- Requests will be populated dynamically via JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        // Function to fetch emergency requests from Flask API
+        async function fetchRequests() {
+            try {
+                const response = await fetch('/api/requests');
+                const data = await response.json();
+    
+                // Sort requests to show the latest first
+                data.reverse();
+    
+                const tableBody = document.getElementById('admin-requests-list');
+                tableBody.innerHTML = '';
+    
+                data.forEach((request, index) => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${request.staff_id}</td>
+                        <td>${request.location}</td>
+                        <td>${request.notes}</td>
+                        <td class="request-status ${request.status.toLowerCase()}">${request.status}</td>
+                        <td>
+                            <button class="btn-approve" onclick="updateStatus(${data.length - 1 - index}, 'Approved')">Approve</button>
+                            <button class="btn-decline" onclick="updateStatus(${data.length - 1 - index}, 'Declined')">Decline</button>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error fetching requests:', error);
+            }
+        }
+    
+        // Function to update request status
+        async function updateStatus(index, newStatus) {
+            try {
+                const response = await fetch('/api/update_status', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ index: index, status: newStatus })
+                });
+    
+                const result = await response.json();
+                if (result.success) {
+                    fetchRequests();
+                } else {
+                    alert('Failed to update status.');
+                }
+            } catch (error) {
+                console.error('Error updating status:', error);
+            }
+        }
+    
+        // Fetch requests on page load
+        fetchRequests();
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+    
+
+</body>
+</html>

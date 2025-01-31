@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emergency Wheelchair Request</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="fade-entry">
+        <div class="healthcare-header">
+            <a href="/wheelchairdispense">Back →</a>
+        </div>
+
+        <h1 class="wheelchair-header">Emergency Wheelchair Request</h1>
+
+        <div class="stats-container">
+            <p>Enter the following details to put emergency request</p>
+        </div>
+
+        <div class="emergency-form-container">
+            <form id="emergencyRequestForm">
+                <label for="staff_id" class="emergency-label">Staff ID Number:</label>
+                <input type="text" id="staff_id" class="emergency-input-field" placeholder="Enter your staff ID" required>
+
+                <label for="location" class="emergency-label">Select Location:</label>
+                <select id="location" class="emergency-input-field" required>
+                    <option value="">Select Location</option>
+                    <option value="ER">Emergency Room</option>
+                    <option value="ICU">Intensive Care Unit</option>
+                    <option value="OPD">Outpatient Department</option>
+                    <option value="Radiology">Radiology</option>
+                </select>
+
+                <label for="notes" class="emergency-label">Additional Notes:</label>
+                <textarea id="notes" class="emergency-input-field emergency-textarea" placeholder="Enter any additional details"></textarea>
+
+                <button type="submit" class="emergency-submit-button">Submit Request</button>
+            </form>
+
+            <div id="responseMessage" class="emergency-response-message"></div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById("emergencyRequestForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const requestData = {
+                staff_id: document.getElementById("staff_id").value,
+                location: document.getElementById("location").value,
+                notes: document.getElementById("notes").value
+            };
+
+            try {
+                const response = await fetch('/api/emergency_request', {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(requestData)
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    document.getElementById("responseMessage").innerHTML = 
+                        '<p class="emergency-success-message">Emergency request submitted successfully!</p>';
+                    document.getElementById("emergencyRequestForm").reset();
+                } else {
+                    document.getElementById("responseMessage").innerHTML = 
+                        '<p class="emergency-error-message">Failed to submit the request. Please try again.</p>';
+                }
+            } catch (error) {
+                document.getElementById("responseMessage").innerHTML = 
+                    '<p class="emergency-error-message">An error occurred while submitting the request.</p>';
+            }
+        });
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+
+</body>
+</html>

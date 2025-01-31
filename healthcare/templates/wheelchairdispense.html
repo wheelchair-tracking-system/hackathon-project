@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wheelchair Dispense</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap" rel="stylesheet">
+
+</head>
+<body>
+
+    <div class="fade-entry">
+        <div class="healthcare-header">
+            <a href="/wheelchairdispense/emergency">Emergency Request</a>
+            <a href="/dashboard">Back →</a>
+        </div>
+
+        <h1 class="wheelchair-header">Wheelchair Dispense System</h1>
+        
+        <div class="stats-container">
+            <p><strong>Available Wheelchairs:</strong> <span class="stats" id="available">0</span></p>
+            <p><strong>In Use:</strong> <span class="stats" id="in_use">0</span></p>
+        </div>
+
+        <form id="dispenseForm" class="dispense-form">
+            <input type="text" id="patient_id" class="input-field" placeholder="Enter Patient ID" required>
+            <button type="submit" class="submit-button">Request Wheelchair</button>
+        </form>
+
+        <table class="wheelchair-table">
+            <thead>
+                <tr>
+                    <th>Wheelchair ID</th>
+                    <th>Status</th>
+                    <th>Assigned to Patient</th>
+                </tr>
+            </thead>
+            <tbody id="wheelchairTable">
+                <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const stats = document.getElementById("stats");
+        const available = document.getElementById("available");
+        const inUse = document.getElementById("in_use");
+        const wheelchairTable = document.getElementById("wheelchairTable");
+        const form = document.getElementById("dispenseForm");
+
+        // Fetch and update wheelchair stats
+        async function fetchWheelchairs() {
+            const response = await fetch('/api/wheelchairs');
+            const data = await response.json();
+
+            available.textContent = data.available;
+            inUse.textContent = data.in_use;
+
+            // Populate the table
+            wheelchairTable.innerHTML = "";
+            data.data.forEach(wheelchair => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${wheelchair.id}</td>
+                    <td>${wheelchair.status}</td>
+                    <td>${wheelchair.patient_id || "N/A"}</td>
+                `;
+                wheelchairTable.appendChild(row);
+            });
+        }
+
+        // Handle wheelchair request form submission
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const patientId = document.getElementById("patient_id").value;
+
+            const response = await fetch('/api/dispense', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ patient_id: patientId })
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            fetchWheelchairs(); // Update stats and table
+            form.reset(); // Clear form input
+        });
+
+        // Initial fetch
+        fetchWheelchairs();
+
+        window.addEventListener('load', function () {
+            document.querySelector('.fade-entry').classList.add('fade-in');
+        });
+    </script>
+</body>
+</html>
